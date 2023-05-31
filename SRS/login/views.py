@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Student
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def login(request):
@@ -12,21 +13,30 @@ def home(request):
 def signup(request):
         return render(request, 'signup.html')
 
+@csrf_exempt
 def verification(request):
+        if 'Username' not in request.POST or 'Password' not in request.POST:
+                return HttpResponse("104")
+
         user = request.POST['Username']
         pas = request.POST['Password']
 
         sdt = Student.objects.filter(usr=user)
 
         if not sdt:
-                return HttpResponse("No record with that Username exists")
+                return HttpResponse("101")
         else:
                 if sdt[0].password != pas:
-                        return HttpResponse("Incorrect password for record")
+                        return HttpResponse("102")
 
-        return HttpResponse(user + " " + pas + " <a href='main'>Go to main page</a>")
+        return HttpResponse("100")
 
+@csrf_exempt
 def verifynew(request):
+        if 'Username' not in request.POST or 'Password' not in request.POST or 'Email' not in request.POST or 'Lname' not in request.POST or 'Fname' not in request.POST or 'Confirm Password' not in request.POST:
+                return HttpResponse("104")
+
+
         fname = request.POST['Fname']
         lname = request.POST['Lname']
         user = request.POST['Username']
@@ -35,21 +45,21 @@ def verifynew(request):
         cpas = request.POST['Confirm Password']
 
         if pas != cpas:
-                return HttpResponse("Passwords don't match")
+                return HttpResponse("101")
 
         sdt = Student.objects.filter(email = eml)
         sdt1 = Student.objects.filter(usr = user)
 
         if sdt:
-                return HttpResponse("That email is already taken")
+                return HttpResponse("102")
 
         if sdt1:
-                return HttpResponse("That username is already taken")
+                return HttpResponse("103")
 
         student = Student(Fname=fname, Lname=lname, usr = user, email = eml, password = pas )
         student.save()
 
-        return HttpResponse("Successful <a href='login'>Login</a>")
+        return HttpResponse("100")
 
 def main(request):
         return HttpResponse("Welcome to main we shall update this soon <a href='login'>Log out</a>")
