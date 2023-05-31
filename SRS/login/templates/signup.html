@@ -1,0 +1,11 @@
+<form action="verifynew" method="POST">
+{% csrf_token %}
+<input type='text' placeholder='Fname' name="Fname" required>
+<input type='text' placeholder='Lname' name="Lname" required>
+<input type='email' placeholder='Email' name="Email" required>
+<input type='text' placeholder='Username' name="Username" required>
+<input type='password' placeholder='Password' name="Password" required>
+<input type='password' placeholder='Confirm Password' name="Confirm Password" required>
+<input type='submit' value='Sign Up'>
+</form>
+<p>Already have an account yet. <a href='login'>Sign in instead</a></p>
